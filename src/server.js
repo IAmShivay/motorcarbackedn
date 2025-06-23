@@ -37,17 +37,12 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3002',
-  'http://localhost:3003',
-  process.env.FRONTEND_URL
-].filter(Boolean);
-
+// CORS configuration - Allow all origins for development
 app.use(cors({
-  origin: allowedOrigins,
+  origin: true, // Allow all origins
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 // Body parsing middleware
@@ -93,7 +88,7 @@ if (process.env.API_DOCS_ENABLED === 'true') {
 }
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_, res) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
